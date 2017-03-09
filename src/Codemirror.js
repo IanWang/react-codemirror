@@ -50,11 +50,8 @@ const CodeMirror = React.createClass({
 	},
 	componentWillUnmount () {
 		// is there a lighter-weight way to remove the cm instance?
-		if (this.codeMirror) {
-			this.codeMirror.toTextArea();
-		}
 	},
-	componentWillReceiveProps: function (nextProps) {
+	componentWillReceiveProps (nextProps) {
 		if (this.codeMirror && nextProps.value !== undefined && normalizeLineEndings(this.codeMirror.getValue()) !== normalizeLineEndings(nextProps.value)) {
 			if (this.props.preserveScrollPosition) {
 				var prevScrollPosition = this.codeMirror.getScrollInfo();
