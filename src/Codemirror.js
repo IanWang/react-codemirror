@@ -33,6 +33,7 @@ const CodeMirror = React.createClass({
 	getInitialState () {
 		return {
 			isFocused: false,
+			isUnmounted: false
 		};
 	},
 	componentWillMount () {
@@ -49,7 +50,9 @@ const CodeMirror = React.createClass({
 		this.codeMirror.setValue(this.props.defaultValue || this.props.value || '');
 	},
 	componentWillUnmount () {
-		// is there a lighter-weight way to remove the cm instance?
+		this.setState({
+			isUnmounted: true
+		})
 	},
 	componentWillReceiveProps (nextProps) {
 		if (this.codeMirror && nextProps.value !== undefined && normalizeLineEndings(this.codeMirror.getValue()) !== normalizeLineEndings(nextProps.value)) {
@@ -78,10 +81,16 @@ const CodeMirror = React.createClass({
 		}
 	},
 	focusChanged (focused) {
-		this.setState({
-			isFocused: focused,
-		});
-		this.props.onFocusChange && this.props.onFocusChange(focused);
+		let { isUnmounted } = this.props
+
+		if(isUnmounted) {
+			return
+		} else {
+			this.setState({
+				isFocused: focused,
+			});
+			this.props.onFocusChange && this.props.onFocusChange(focused);
+		}
 	},
 	scrollChanged (cm) {
 		this.props.onScroll && this.props.onScroll(cm.getScrollInfo());
